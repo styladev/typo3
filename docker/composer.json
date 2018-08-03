@@ -1,0 +1,20 @@
+{
+    "name": "styla/docker-typo3",
+    "config": {
+        "vendor-dir": "Packages/Libraries"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://composer.typo3.org/"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/helhum/typo3_console.git"
+        }
+    ],
+    "require": {
+        "typo3/cms": "^8.7",
+        "helhum/typo3-console": "~5.5.0"
+    }
+}
