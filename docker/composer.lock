@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1116bbf8a9ee094ac538a1643f66d043",
+    "content-hash": "ec5c56586e916683e831e587575a3903",
     "packages": [
         {
             "name": "cogpowered/finediff",
@@ -584,6 +584,69 @@
                 "parser"
             ],
             "time": "2014-09-09T13:34:57+00:00"
+        },
+        {
+            "name": "friendsoftypo3/extension-builder",
+            "version": "8.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfTYPO3/extension_builder.git",
+                "reference": "0bae9c6f6db2b425bca3ff1d40a8371b18bda8ef"
+            },
+            "require": {
+                "php": "^7.0",
+                "typo3/cms-core": "~8.7"
+            },
+            "replace": {
+                "extension_builder": "self.version",
+                "typo3-ter/extension-builder": "self.version"
+            },
+            "type": "typo3-cms-extension",
+            "extra": {
+                "typo3/cms": {
+                    "cms-package-dir": "{$vendor-dir}/typo3/cms",
+                    "web-dir": ".Build/Web"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EBT\\ExtensionBuilder\\": "Classes/",
+                    "PhpParser\\": "Resources/Private/PHP/PHP-Parser/lib/PhpParser/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "EBT\\ExtensionBuilder\\Tests\\": "Tests/",
+                    "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "mkdir -p .Build/Web/typo3conf/ext/",
+                    "[ -L .Build/Web/typo3conf/ext/extension_builder ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/extension_builder"
+                ]
+            },
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Nico de Haen",
+                    "role": "Developer"
+                },
+                {
+                    "name": "extension_builder Development Team",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Tool to kickstart and maintain TYPO3 extensions",
+            "homepage": "https://github.com/FriendsOfTYPO3/extension_builder",
+            "keywords": [
+                "TYPO3",
+                "extension",
+                "extension_builder"
+            ],
+            "time": "2017-08-13T06:49:02+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
