@@ -5,3 +5,4 @@ $GLOBALS['TYPO3_CONF_VARS']['DB']['password'] = getenv('DB_PASS');
 $GLOBALS['TYPO3_CONF_VARS']['DB']['port'] = getenv('DB_PORT');
 $GLOBALS['TYPO3_CONF_VARS']['DB']['database'] = getenv('DB_NAME');
 $GLOBALS['TYPO3_CONF_VARS']['BE']['installToolPassword'] = md5(getenv('INSTALL_TOOL_PASSWORD'));
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['displayErrors'] = 1;

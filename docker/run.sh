@@ -69,10 +69,10 @@ if [ ! -f /var/www/html/typo3conf/LocalConfiguration.php ]
             --admin-user-name="admin" \
             --admin-password="password" \
             --site-name="TYPO3 Demo Installation"
-
-        echo "Set permissions for /app folder ..."
-        chown www-data:www-data -R /var/www/html/fileadmin /var/www/html/typo3temp /var/www/html/uploads
 fi
+
+echo "Set permissions for /app folder ..."
+chown www-data:www-data -R /var/www/html/fileadmin /var/www/html/typo3temp /var/www/html/uploads
 
 # Start apache in foreground if no arguments are given
 if [ $# -eq 0 ]
