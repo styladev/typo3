@@ -69,7 +69,7 @@ RUN composer config extra.typo3/cms.cms-package-dir '{$vendor-dir}/typo3/cms' &&
     composer install
 
 # Install plugin
-ADD ./styla_typo3 /var/www/html/typo3conf/ext/styla_typo3
+ADD ./ec_styla /var/www/html/typo3conf/ext/ec_styla
 
 
 # Configure volumes
@@ -77,6 +77,6 @@ VOLUME /var/www/html/fileadmin
 VOLUME /var/www/html/typo3conf
 VOLUME /var/www/html/typo3temp
 VOLUME /var/www/html/uploads
-VOLUME /var/www/html/typo3conf/ext/styla_typo3
+VOLUME /var/www/html/typo3conf/ext/ec-styla
 
 CMD ["/bin/bash", "-c", "/run.sh"]

@@ -69,6 +69,8 @@ if [ ! -f /var/www/html/typo3conf/LocalConfiguration.php ]
             --admin-user-name="admin" \
             --admin-password="password" \
             --site-name="TYPO3 Demo Installation"
+
+        php typo3cms extension:activate fluid_styled_content
 fi
 
 echo "Set permissions for /app folder ..."
