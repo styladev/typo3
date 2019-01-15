@@ -63,7 +63,7 @@ RUN chmod 755 /*.sh
 # Install dependencies defined in composer.json
 WORKDIR /var/www/html/
 ADD ./docker/composer.json .
-ADD ./docker/composer.lock .
+#ADD ./docker/composer.lock .
 RUN composer config extra.typo3/cms.cms-package-dir '{$vendor-dir}/typo3/cms' && \
     composer config secure-http false && \
     composer install

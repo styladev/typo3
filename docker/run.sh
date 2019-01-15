@@ -59,13 +59,13 @@ if [ ! -f /var/www/html/typo3conf/LocalConfiguration.php ]
     then
         cd /var/www/html/Packages/Libraries/bin
 
-        php typo3cms install:setup --non-interactive \
+        php typo3cms install:setup --no-interaction \
             --database-user-name="$DB_USER" \
             --database-host-name="$DB_HOST" \
             --database-port="$DB_PORT" \
             --database-name="$DB_NAME" \
             --database-user-password="$DB_PASS" \
-            --use-existing-database=true \
+            --use-existing-database="true" \
             --admin-user-name="admin" \
             --admin-password="password" \
             --site-name="TYPO3 Demo Installation"
