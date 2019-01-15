@@ -72,7 +72,7 @@ if [ ! -f /var/www/html/typo3conf/LocalConfiguration.php ]
 fi
 
 echo "Set permissions for /app folder ..."
-chown www-data:www-data -R /var/www/html/fileadmin /var/www/html/typo3temp /var/www/html/uploads
+chown www-data:www-data -R /var/www/html/fileadmin /var/www/html/typo3temp /var/www/html/uploads /var/www/html/typo3conf
 
 # Start apache in foreground if no arguments are given
 if [ $# -eq 0 ]
