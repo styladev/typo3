@@ -1,0 +1,22 @@
+<T3DataStructure>
+    <sheets>
+        <sDEF>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Styla</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.contenthub.id>
+                        <TCEforms>
+                            <label>LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_contenthub.content_hub_id</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.contenthub.id>
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
+</T3DataStructure>

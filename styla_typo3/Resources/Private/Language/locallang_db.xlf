@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2018-09-07T08:33:43Z" product-name="ec_styla">
+		<header/>
+		<body>
+			<trans-unit id="tx_ec_styla_contenthub.name">
+				<source>Styla Content Hub</source>
+			</trans-unit>
+			<trans-unit id="tx_ec_styla_contenthub.description">
+				<source>Displays stories inside a content hub.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

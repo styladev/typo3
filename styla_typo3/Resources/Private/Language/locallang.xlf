@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2018-09-07T08:33:43Z" product-name="ec_styla">
+		<header/>
+		<body>
+			<trans-unit id="tx_ecstyla_domain_model_contenthub">
+				<source>Content Hub</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_contenthub.content_hub_id">
+				<source>Content Hub Id</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_contenthub.api_url">
+				<source>STYLA Api Url</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_contenthub.content_hub_segment">
+				<source>Content Hub Segment</source>
+			</trans-unit>
+
+			<trans-unit id="tx_ecstyla_domain_model_teaser.limit">
+				<source>Limit</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.imagesize">
+				<source>Image size</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.normal">
+				<source>Normal</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.small">
+				<source>Small</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.large">
+				<source>Large</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.tiles">
+				<source>Tiles</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.cards">
+				<source>Cards</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.list">
+				<source>List</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.horizontal">
+				<source>Horizontal</source>
+			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_teaser.mode">
+				<source>Display Mode</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,80 @@
+<html xmlns:f="https://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+	<f:layout name="Default" />
+
+	<f:section name="content">
+        {v:system.uniqId(prefix: 'teaser-', moreEntropy: 0) -> v:variable.set(name: 'temporaryTeaserSelector')}
+        <script>
+            var temporaryTeaserSelector = '#{temporaryTeaserSelector}';
+            var temporaryTeaserContenthub = '{settings.contenthub.id}';
+
+            var imageSize = {settings.teaser.imagesize};
+            var imageLimit = {settings.teaser.limit};
+        </script>
+        <div id="{temporaryTeaserSelector}"></div>
+
+        <link rel="dns-prefetch" href="//styla-prod.us.imgix.net">
+        <link rel="dns-prefetch" href="//client-scripts.styla.com">
+        <link rel="dns-prefetch" href="//redpanda.styla.com">
+        <f:switch expression="{settings.mode}">
+            <f:case value="horizontal">
+                <script src="https://widget.styla.com/horizontal.v2.min.js"></script>
+                <script>
+                    new StylaWidget_Horizontal( {
+                        slug : temporaryTeaserContenthub,
+                        target : temporaryTeaserSelector,
+                        tag: false,
+                        categories: false,
+                        imageSize: imageSize,
+                        limit: imageLimit,
+                        domain: 'magazines.styla.com/v2/ecentral-demo'
+                    } );
+                </script>
+            </f:case>
+            <f:case value="list">
+                <script src="https://widget.styla.com/list.v2.min.js"></script>
+                <script>
+                    new StylaWidget_List( {
+                        slug : temporaryTeaserContenthub,
+                        target : temporaryTeaserSelector,
+                        tag: false,
+                        categories: false,
+                        imageSize: imageSize,
+                        limit: imageLimit,
+                        domain: 'magazines.styla.com/v2/ecentral-demo'
+                    } );
+                </script>
+            </f:case>
+            <f:case value="cards">
+                <script src="https://widget.styla.com/cards.v2.min.js"></script>
+                <script>
+                    new StylaWidget_Cards( {
+                        slug : temporaryTeaserContenthub,
+                        target : temporaryTeaserSelector,
+                        tag: false,
+                        categories: false,
+                        imageSize: imageSize,
+                        limit: imageLimit,
+                        domain: 'magazines.styla.com/v2/ecentral-demo'
+                    } );
+                </script>
+            </f:case>
+            <f:defaultCase>
+                <script src="https://widget.styla.com/tiles.v2.min.js"></script>
+                <script>
+                    new StylaWidget_Tiles( {
+                        slug : temporaryTeaserContenthub,
+                        target : temporaryTeaserSelector,
+                        tag: false,
+                        categories: false,
+                        imageSize: imageSize,
+                        limit: imageLimit,
+                        domain: 'magazines.styla.com/v2/ecentral-demo'
+                    } );
+                </script>
+            </f:defaultCase>
+        </f:switch>
+
+    </f:section>
+
+</html>

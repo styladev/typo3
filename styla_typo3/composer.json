@@ -1,0 +1,26 @@
+{
+    "name": "ecentral/ec-styla",
+    "type": "typo3-cms-extension",
+    "description": "TYPO3 Extension for the styla content experience engine.",
+    "keywords": ["typo3", "extension", "styla"],
+    "homepage": "http://ecentral.de",
+    "authors": [
+        {
+            "name": "Ecentral",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "typo3/cms-core": ">=7.6.0",
+        "typo3/cms-frontend": ">=7.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ecentral\\EcStyla\\": "Classes/"
+        }
+    },
+    "replace": {
+        "ec_styla": "self.version",
+        "typo3-ter/ec-styla": "self.version"
+    }
+}

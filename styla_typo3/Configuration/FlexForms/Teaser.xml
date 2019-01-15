@@ -1,0 +1,85 @@
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <sDEF>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Styla</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.contenthub.id>
+                        <TCEforms>
+                            <label>LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_contenthub.content_hub_id</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.contenthub.id>
+                    <settings.teaser.limit>
+                        <TCEforms>
+                            <label>LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.limit</label>
+                            <config>
+                                <type>input</type>
+                                <default>4</default>
+                            </config>
+                        </TCEforms>
+                    </settings.teaser.limit>
+                    <settings.teaser.imagesize>
+                        <TCEforms>
+                            <label>LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.imagesize</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <default>400</default>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.normal</numIndex>
+                                        <numIndex index="1">400</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.small</numIndex>
+                                        <numIndex index="1">260</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.large</numIndex>
+                                        <numIndex index="1">640</numIndex>
+                                    </numIndex>
+                            </items>
+                        </config>
+                    </TCEforms>
+                </settings.teaser.imagesize>
+                    <settings.mode>
+                        <TCEforms>
+                            <label>LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.mode</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.tiles</numIndex>
+                                        <numIndex index="1">default</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.cards</numIndex>
+                                        <numIndex index="1">cards</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.list</numIndex>
+                                        <numIndex index="1">list</numIndex>
+                                    </numIndex>
+                                    <numIndex index="3" type="array">
+                                        <numIndex index="0">LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_teaser.horizontal</numIndex>
+                                        <numIndex index="1">horizontal</numIndex>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </settings.mode>
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
+</T3DataStructure>

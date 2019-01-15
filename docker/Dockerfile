@@ -41,12 +41,12 @@ RUN rm -rf /var/lib/apt/lists/* /usr/src/*
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN a2enmod rewrite
-ADD typo3.conf /etc/apache2/sites-enabled/000-default.conf
+ADD ./docker/typo3.conf /etc/apache2/sites-enabled/000-default.conf
 
 # Adjust some php settings
-ADD typo3.php.ini /etc/php5/conf.d/
+ADD ./docker/typo3.php.ini /etc/php5/conf.d/
 
-ADD AdditionalConfiguration.php /var/www/html/typo3conf/
+ADD ./docker/AdditionalConfiguration.php /var/www/html/typo3conf/
 
 # Expose environment variables
 ENV DB_HOST **LinkMe**
@@ -57,21 +57,26 @@ ENV DB_PASS **ChangeMe**
 ENV INSTALL_TOOL_PASSWORD password
 ENV TYPO3_CONTEXT Development
 
-ADD run.sh /run.sh
+ADD ./docker/run.sh /run.sh
 RUN chmod 755 /*.sh
 
 # Install dependencies defined in composer.json
 WORKDIR /var/www/html/
-ADD composer.json .
-ADD composer.lock .
+ADD ./docker/composer.json .
+ADD ./docker/composer.lock .
 RUN composer config extra.typo3/cms.cms-package-dir '{$vendor-dir}/typo3/cms' && \
     composer config secure-http false && \
     composer install
+
+# Install plugin
+ADD ./styla_typo3 /var/www/html/typo3conf/ext/styla_typo3
+
 
 # Configure volumes
 VOLUME /var/www/html/fileadmin
 VOLUME /var/www/html/typo3conf
 VOLUME /var/www/html/typo3temp
 VOLUME /var/www/html/uploads
+VOLUME /var/www/html/typo3conf/ext/styla_typo3
 
 CMD ["/bin/bash", "-c", "/run.sh"]
