@@ -70,7 +70,11 @@ if [ ! -f /var/www/html/typo3conf/LocalConfiguration.php ]
             --admin-password="password" \
             --site-name="TYPO3 Demo Installation"
 
+        echo "=> Activate plugin: fluid_styled_content"
         php typo3cms extension:activate fluid_styled_content
+
+        echo "=> Import database dump"
+        cat /var/www/html/dump.sql | php /var/www/html/Packages/Libraries/bin/typo3cms database:import
 fi
 
 echo "Set permissions for /app folder ..."

@@ -17,5 +17,10 @@
         "typo3/cms": "8.7.18",
         "helhum/typo3-console": "5.5.0",
         "dmitryd/typo3-realurl": "2.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ecentral\\EcStyla\\": "typo3conf/ext/ec_styla/Classes"
+        }
     }
 }

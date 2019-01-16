@@ -103,6 +103,11 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $signalSlotDispatcher = $this->objectManager->get(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
         $signalSlotDispatcher->dispatch(__CLASS__, 'beforeProcessingSeoContent', array('ec_styla', &$content));
 
+        if ($content->error) {
+            $this->view->assign('seoHtml', '');
+            return;
+        }
+
         foreach ($content->tags as $item) {
             if ('' != ($headerElement = $this->getHtmlForTagItem($item))) {
                 // If Cache-Control is set to no-cache upon request, the page renderer

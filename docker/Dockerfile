@@ -60,8 +60,9 @@ ENV TYPO3_CONTEXT Development
 ADD ./docker/run.sh /run.sh
 RUN chmod 755 /*.sh
 
-# Install dependencies defined in composer.json
 WORKDIR /var/www/html/
+
+# Install dependencies defined in composer.json
 ADD ./docker/composer.json .
 #ADD ./docker/composer.lock .
 RUN composer config extra.typo3/cms.cms-package-dir '{$vendor-dir}/typo3/cms' && \
@@ -69,8 +70,14 @@ RUN composer config extra.typo3/cms.cms-package-dir '{$vendor-dir}/typo3/cms' &&
     composer install
 
 # Install plugin
-ADD ./ec_styla /var/www/html/typo3conf/ext/ec_styla
+ADD ./ec_styla ./typo3conf/ext/ec_styla
+#WORKDIR /var/www/html/typo3conf/ext/ec_styla
+#RUN composer config secure-http false && \
+#    composer install
 
+# Add other files
+WORKDIR /var/www/html/
+ADD ./docker/dump.sql .
 
 # Configure volumes
 VOLUME /var/www/html/fileadmin
