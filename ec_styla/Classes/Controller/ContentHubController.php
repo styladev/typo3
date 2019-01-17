@@ -103,7 +103,7 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $signalSlotDispatcher = $this->objectManager->get(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
         $signalSlotDispatcher->dispatch(__CLASS__, 'beforeProcessingSeoContent', array('ec_styla', &$content));
 
-        if ($content->error) {
+        if (!$content || $content->error) {
             $this->view->assign('seoHtml', '');
             return;
         }
