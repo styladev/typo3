@@ -69,22 +69,16 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $cachedContent = $this->cache->get($cacheIdentifier);
 
         if (false == $cachedContent) {
-            $uriWithoutBaseUrl = str_replace(
+            $path = str_replace(
                 $this->getControllerContext()->getRequest()->getBaseUri(),
                 '',
                 $this->getControllerContext()->getRequest()->getRequestUri()
             );
 
-            $contentHubUrlSegment = str_replace (
-                $this->settings['contenthub_segment'],
-                '',
-                $uriWithoutBaseUrl
-            );
-
             $url = sprintf(
                 $this->settings['api_url'] . self::API_URI_QUERYSTRING,
                 $this->settings['contenthub']['id'],
-                $contentHubUrlSegment
+                $path
             );
 
             $content = $this->fetchContentHubSeo($url);

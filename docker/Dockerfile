@@ -60,6 +60,10 @@ ENV TYPO3_CONTEXT Development
 ADD ./docker/run.sh /run.sh
 RUN chmod 755 /*.sh
 
+# Configurate apache
+ADD ./docker/000-default.conf /etc/apache2/sites-available/000-default.conf
+
+# Install app
 WORKDIR /var/www/html/
 
 # Install dependencies defined in composer.json
