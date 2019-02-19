@@ -26,6 +26,8 @@
 namespace Ecentral\EcStyla\Hook;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Class Realurl
@@ -37,7 +39,7 @@ class Realurl {
 
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        $this->objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
     }
 
     /**
@@ -47,7 +49,7 @@ class Realurl {
      */
     public function configure($parameters) {
 
-        $configuration = $this->getExtensionConfiguration('ec_styla');
+        $configuration = $this->getExtensionConfiguration();
 
         if ((null != $configuration['contenthub_segment']) &&
             ('' != $configuration['contenthub_segment'])) {
@@ -56,12 +58,11 @@ class Realurl {
             $uriSegment = 'magazine';
         }
 
-        $uriSegment = '/' . $uriSegment . '\//';
+        $signalSlotDispatcher = $this->objectManager->get(Dispatcher::class);
+        list($uriSegment) = $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForContenthubSegment', array($uriSegment));
 
-        $signalSlotDispatcher = $this->objectManager->get(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
-        $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForContenthubSegment', array('ec_styla', &$uriSegment));
-
-        if (preg_match($uriSegment, $_SERVER['REQUEST_URI']) ) {
+        $pattern = sprintf('~/%s/~', ltrim($uriSegment, '/'));
+        if (preg_match($pattern, $_SERVER['REQUEST_URI']) ) {
             $parameters['configuration']['init']['postVarSet_failureMode'] = 'ignore';
         }
     }
@@ -72,10 +73,10 @@ class Realurl {
      * @param $name
      * @return mixed
      */
-    protected function getExtensionConfiguration($name) {
-        $configurationManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
-        $setup = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+    protected function getExtensionConfiguration() {
+        $configurationManager = $this->objectManager->get(ConfigurationManagerInterface::class);
+        $setup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
 
-        return $setup['plugin.']['tx_' . $name .'.']['settings.'];
+        return $setup;
     }
 }
