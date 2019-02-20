@@ -25,17 +25,23 @@
 
 namespace Ecentral\EcStyla\Hook;
 
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 /**
  * Class Realurl
  * @package Ecentral\EcStyla\Hook
  */
-class Realurl {
+class Realurl implements SingletonInterface {
     /** @var  \TYPO3\CMS\Extbase\Object\ObjectManager */
     protected $objectManager;
+
+    /**
+     * @var array
+     */
+    protected $valuedExtensionConfiguration;
 
     public function __construct()
     {
@@ -49,34 +55,40 @@ class Realurl {
      */
     public function configure($parameters) {
 
-        $configuration = $this->getExtensionConfiguration();
-
-        if ((null != $configuration['contenthub_segment']) &&
-            ('' != $configuration['contenthub_segment'])) {
-            $uriSegment = $configuration['contenthub_segment'];
-        } else {
-            $uriSegment = 'magazine';
-        }
+        $uriSegment = $this->getExtensionConfiguration('contenthubSegment');
 
         $signalSlotDispatcher = $this->objectManager->get(Dispatcher::class);
         list($uriSegment) = $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForContenthubSegment', array($uriSegment));
 
-        $pattern = sprintf('~/%s/~', ltrim($uriSegment, '/'));
-        if (preg_match($pattern, $_SERVER['REQUEST_URI']) ) {
+        if ($this->isStoryRequest($uriSegment)) {
             $parameters['configuration']['init']['postVarSet_failureMode'] = 'ignore';
         }
     }
 
+    protected function isStoryRequest(string $uriSegment): bool
+    {
+        $pattern = sprintf('~/%s/~', trim($uriSegment, '/'));
+        return (bool)preg_match($pattern, $_SERVER['REQUEST_URI']);
+    }
+
     /**
-     * Returns the settings section of the given extension
-     *
-     * @param $name
+     * @param string $key
      * @return mixed
      */
-    protected function getExtensionConfiguration() {
-        $configurationManager = $this->objectManager->get(ConfigurationManagerInterface::class);
-        $setup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
+    public function getExtensionConfiguration(string $key)
+    {
+        if (!is_array($this->valuedExtensionConfiguration)) {
+            /** @var ConfigurationUtility $configurationUtility */
+            $configurationUtility = $this->objectManager->get(ConfigurationUtility::class);
+            $extensionConfiguration = $configurationUtility->getCurrentConfiguration('ec_styla');
+            $this->valuedExtensionConfiguration = $configurationUtility->convertNestedToValuedConfiguration($extensionConfiguration);
+        }
 
-        return $setup;
+        $configKey = sprintf('%s.value', $key);
+        if (array_key_exists($configKey, $this->valuedExtensionConfiguration)) {
+            return $this->valuedExtensionConfiguration[$configKey]['value'];
+        } else {
+            return null;
+        }
     }
 }
