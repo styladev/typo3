@@ -25,19 +25,27 @@
 
 namespace Ecentral\EcStyla\Hook;
 
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 
 /**
  * Class Realurl
  * @package Ecentral\EcStyla\Hook
  */
-class Realurl {
+class Realurl implements SingletonInterface {
     /** @var  \TYPO3\CMS\Extbase\Object\ObjectManager */
     protected $objectManager;
 
+    /**
+     * @var array
+     */
+    protected $valuedExtensionConfiguration;
+
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        $this->objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
     }
 
     /**
@@ -47,35 +55,40 @@ class Realurl {
      */
     public function configure($parameters) {
 
-        $configuration = $this->getExtensionConfiguration('ec_styla');
+        $uriSegment = $this->getExtensionConfiguration('contenthubSegment');
 
-        if ((null != $configuration['contenthub_segment']) &&
-            ('' != $configuration['contenthub_segment'])) {
-            $uriSegment = $configuration['contenthub_segment'];
-        } else {
-            $uriSegment = 'magazine';
-        }
+        $signalSlotDispatcher = $this->objectManager->get(Dispatcher::class);
+        list($uriSegment) = $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForContenthubSegment', array($uriSegment));
 
-        $uriSegment = '/' . $uriSegment . '\//';
-
-        $signalSlotDispatcher = $this->objectManager->get(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
-        $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForContenthubSegment', array('ec_styla', &$uriSegment));
-
-        if (preg_match($uriSegment, $_SERVER['REQUEST_URI']) ) {
+        if ($this->isStoryRequest($uriSegment)) {
             $parameters['configuration']['init']['postVarSet_failureMode'] = 'ignore';
         }
     }
 
+    protected function isStoryRequest(string $uriSegment): bool
+    {
+        $pattern = sprintf('~/%s/~', trim($uriSegment, '/'));
+        return (bool)preg_match($pattern, $_SERVER['REQUEST_URI']);
+    }
+
     /**
-     * Returns the settings section of the given extension
-     *
-     * @param $name
+     * @param string $key
      * @return mixed
      */
-    protected function getExtensionConfiguration($name) {
-        $configurationManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
-        $setup = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+    public function getExtensionConfiguration(string $key)
+    {
+        if (!is_array($this->valuedExtensionConfiguration)) {
+            /** @var ConfigurationUtility $configurationUtility */
+            $configurationUtility = $this->objectManager->get(ConfigurationUtility::class);
+            $extensionConfiguration = $configurationUtility->getCurrentConfiguration('ec_styla');
+            $this->valuedExtensionConfiguration = $configurationUtility->convertNestedToValuedConfiguration($extensionConfiguration);
+        }
 
-        return $setup['plugin.']['tx_' . $name .'.']['settings.'];
+        $configKey = sprintf('%s.value', $key);
+        if (array_key_exists($configKey, $this->valuedExtensionConfiguration)) {
+            return $this->valuedExtensionConfiguration[$configKey]['value'];
+        } else {
+            return null;
+        }
     }
 }
