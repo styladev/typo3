@@ -1,4 +1,4 @@
-# Styla TYPO3 Plugin v1.0.0
+# Styla TYPO3 Plugin
 This typo3 plugin allows to run the Styla content hub and / or landing pages with full SEO integration.
 
 ## Requirements
