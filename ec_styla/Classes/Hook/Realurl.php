@@ -55,17 +55,17 @@ class Realurl implements SingletonInterface {
      */
     public function configure($parameters) {
 
-        $uriSegment = $this->getExtensionConfiguration('contenthubSegment');
+        $uriSegment = $this->getExtensionConfiguration('rootPath');
 
         $signalSlotDispatcher = $this->objectManager->get(Dispatcher::class);
-        list($uriSegment) = $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForContenthubSegment', array($uriSegment));
+        list($uriSegment) = $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForRootPath', array($uriSegment));
 
-        if ($this->isStoryRequest($uriSegment)) {
+        if ($this->isStylaRequest($uriSegment)) {
             $parameters['configuration']['init']['postVarSet_failureMode'] = 'ignore';
         }
     }
 
-    protected function isStoryRequest(string $uriSegment): bool
+    protected function isStylaRequest($uriSegment)
     {
         $pattern = sprintf('~/%s/~', trim($uriSegment, '/'));
         return (bool)preg_match($pattern, $_SERVER['REQUEST_URI']);
@@ -75,7 +75,7 @@ class Realurl implements SingletonInterface {
      * @param string $key
      * @return mixed
      */
-    public function getExtensionConfiguration(string $key)
+    public function getExtensionConfiguration($key)
     {
         if (!is_array($this->valuedExtensionConfiguration)) {
             /** @var ConfigurationUtility $configurationUtility */

@@ -25,14 +25,7 @@ Please note that there are issues with hiding the page title in some versions of
 in issue [#85720](https://forge.typo3.org/issues/85720) of the TYPO3 core bug tracker.
     
 ### Extension Configuration
-The plugin has default options which can be overridden.
-
-    plugin.tx_ecstyla_contenthub {
-        settings {
-            contenthub_segment = magazine
-            api_url = https://seoapi.styla.com/clients/
-        }
-    }
+Within the plugin configuration the rootpath to the styla content needs to be set up.
     
 ## Plugins
 You can add STYLA Plugins via the 'Add Content' option of the page module. 
@@ -50,7 +43,7 @@ to be displayed, the size of the teaser images as well as the display mode. Avai
 * Horizontal
 
 ## Signal Slots
-The extension provides two signal slots: beforeProcessingSeoContent and beforeCheckingForContenthubSegment. You can find
+The extension provides two signal slots: beforeProcessingSeoContent and beforeCheckingForRootPath. You can find
 out more information about signal slots in the [official TYPO3 documentation](https://docs.typo3.org/typo3cms/CoreApiReference/ApiOverview/Hooks/Concept/Index.html). 
 
 ## Caching

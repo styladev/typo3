@@ -1,2 +1,2 @@
-# cat=basic; type=string; label=Content Hub Segment
-contenthubSegment = magazine
+# cat=basic; type=string; label=Rootpath
+rootPath = magazine
