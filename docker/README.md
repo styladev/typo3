@@ -1,8 +1,8 @@
-# Typo3 Plugin
+# TYPO3 Styla Extension Docker setup
 
 ## How to start
 
-Start with
+In project's root folder, start with
 
     docker-compose up --build
 
@@ -14,11 +14,13 @@ Access backend:
 
     http://localhost/typo3
 
+Credentials are `admin` / `password` (set in [./run.sh])
+
 ## Example database
 
-There is a set of configurated pages within the docker setup to test the plugin behavior.
+There is a set of configured pages within the docker setup to test the extension behavior.
 
-### Create new database dump
+### How to create a new database dump
 
 Connect to docker instance:
 
