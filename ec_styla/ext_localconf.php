@@ -103,5 +103,12 @@ call_user_func(
         if (false == isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['ec_styla']['frontend'])) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['ec_styla']['frontend'] = \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class;
         }
+
+        if ('7.6' == TYPO3_branch) {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Ecentral\\EcStyla\\Utility\\StylaRequest'] = array(
+                'className' => '\Ecentral\EcStyla\Compatiblity\_7_6\Utility\StylaRequest::class'
+            );
+        }
+
     }
 );
