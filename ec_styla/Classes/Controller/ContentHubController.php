@@ -81,15 +81,18 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                 $path
             );
 
-            $content = $this->fetchContentHubSeo($url);
-
-            $this->cacheContent(
-                $content,
-                array (
-                    'styla',
-                    $this->settings['contenthub']['id']
-                )
-            );
+            $request = GeneralUtility::makeInstance(\Ecentral\EcStyla\Utility\StylaRequest::class);
+            $content = $request->get($url);
+            if (null !== $content) {
+                $this->cachePeriod = $request->getCachePeriod();
+                $this->cacheContent(
+                    $content,
+                    array (
+                        'styla',
+                        $this->settings['contenthub']['id']
+                    )
+                );
+            }
        } else {
             $content = $cachedContent;
         }
@@ -112,55 +115,6 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         }
 
         $this->view->assign('seoHtml', $content->html->body);
-    }
-
-    /**
-     * Get SEO relevant data from remote
-     *
-     * @param $url
-     * @return mixed|null
-     */
-    protected function fetchContentHubSeo($url) {
-        /** @var \TYPO3\CMS\Core\Http\RequestFactory $requestFactory */
-        $requestFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Http\RequestFactory::class);
-
-        $response = $requestFactory->request($url, 'GET');
-        if ($response->getStatusCode() === 200) {
-            $content = json_decode($response->getBody()->getContents());
-            if ((null != $content) &&
-                ($content->code === 'success')) {
-
-                if (null != ($cacheControl = $response->getHeader('cache-control'))) {
-                    $this->cachePeriod = $cacheControl;
-                }
-
-                return $content;
-            } else {
-                /** @var $logger \TYPO3\CMS\Core\Log\Logger */
-                $this->logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
-
-                $this->logger->error(
-                    'Styla api could not deliver the requested content',
-                    array(
-                        'code' => $content->code,
-                    )
-                );
-            }
-        } else {
-            /** @var $logger \TYPO3\CMS\Core\Log\Logger */
-            $logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
-
-            $logger->error(
-                'Error during communication with styla api',
-                array(
-                    'url' => $url,
-                    'page' => $GLOBALS['TSFE']->id,
-                    'status' => $response->getStatusCode()
-                )
-            );
-
-            return null;
-        }
     }
 
     /**
