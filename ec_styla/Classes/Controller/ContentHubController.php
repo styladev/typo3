@@ -69,11 +69,11 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $cachedContent = $this->cache->get($cacheIdentifier);
 
         if (false == $cachedContent) {
-            $path = str_replace(
+            $path = strtok(str_replace(
                 $this->getControllerContext()->getRequest()->getBaseUri(),
                 '',
                 $this->getControllerContext()->getRequest()->getRequestUri()
-            );
+            ), '?');
 
             $url = sprintf(
                 $this->settings['api_url'] . self::API_URI_QUERYSTRING,
@@ -139,7 +139,9 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * @return string
      */
     protected function getCacheIdentifier() {
-        return 'styla-' . $this->settings['contenthub']['id'] . '-'. md5($this->getControllerContext()->getRequest()->getRequestUri());
+        $path = strtok($this->getControllerContext()->getRequest()->getRequestUri(), '?');
+
+        return 'styla-' . $this->settings['contenthub']['id'] . '-'. md5($path);
     }
 
     /**
