@@ -74,10 +74,8 @@ RUN composer config extra.typo3/cms.cms-package-dir '{$vendor-dir}/typo3/cms' &&
     composer install
 
 # Install plugin
-ADD ./ec_styla ./typo3conf/ext/ec_styla
-#WORKDIR /var/www/html/typo3conf/ext/ec_styla
-#RUN composer config secure-http false && \
-#    composer install
+RUN mkdir ./typo3conf/ext/ec_styla
+ADD . ./typo3conf/ext/ec_styla
 
 # Add other files
 WORKDIR /var/www/html/
