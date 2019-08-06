@@ -6,8 +6,12 @@ TYPO3 >= 7.6.31
 PHP >= 5.5  
 MySQL >= 5.5
 
-## Installation in TYPO3 System
-* Move the extension folder `ec_styla` to `/typo3conf/ext/`
+## Installation Composer Mode
+* Use `composer require styladev/typo3` in typo3 folder
+
+## Installation Classic Mode
+* Create new extension folder `ec_styla` in `/typo3conf/ext/`
+* Move repository content in folder `ec_styla`
 * Inside the TYPO3 backend, go to Extensions and activate ec_styla
 
 ## Configuration
