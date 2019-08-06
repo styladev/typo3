@@ -1,9 +1,9 @@
 {
-    "name": "ecentral/ec-styla",
+    "name": "styladev/typo3",
     "type": "typo3-cms-extension",
     "description": "TYPO3 Extension for the styla content experience engine.",
     "keywords": ["typo3", "extension", "styla"],
-    "homepage": "http://ecentral.de",
+    "homepage": "https://styla.com",
     "authors": [
         {
             "name": "Ecentral",
