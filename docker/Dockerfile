@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.1-apache-jessie
 
 # Install TYPO3
 RUN apt-get update && \
@@ -15,6 +15,10 @@ RUN apt-get install -y --no-install-recommends \
         libmcrypt-dev \
         libpng-dev \
         zlib1g-dev
+
+RUN apt-get install -y zlib1g-dev libicu-dev g++
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install intl
 
 # Install required 3rd party tools
 RUN apt-get install -y --no-install-recommends \
