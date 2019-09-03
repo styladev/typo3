@@ -1,6 +1,8 @@
 # Styla TYPO3 Extension
 This TYPO3 extension allows to show the Styla content hub and / or landing pages with full SEO integration in a TYPO3 setup.
 
+[This documentation page](https://docs.styla.com/) should provide you an overview of how Styla works in general. 
+
 ## Requirements
 TYPO3 >= 7.6.31  
 PHP >= 5.5  
