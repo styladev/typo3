@@ -42,6 +42,11 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $disabledMetaTagsArray = [];
+
+    /**
      * Default lifetime of cached data
      * @var int
      */
@@ -118,6 +123,8 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             return;
         }
 
+        $this->disabledMetaTagsArray = array_map('trim', explode(',', $this->settings['disabled_meta_tags']));
+
         foreach ($content->tags as $item) {
             if ('' != ($headerElement = $this->getHtmlForTagItem($item))) {
                 // If Cache-Control is set to no-cache upon request, the page renderer
@@ -168,7 +175,7 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     protected function getHtmlForTagItem($item) {
         switch ($item->tag) {
             case 'meta':
-                if(null != $item->attributes->name) {
+                if(null != $item->attributes->name && !in_array($item->attributes->name, $this->disabledMetaTagsArray)) {
                     return '<meta name="' . $item->attributes->name  . '" content="' . $item->attributes->content . '" />';
                 }
                 return '<meta property="' .  $item->attributes->property  . '" content="' . $item->attributes->content . '" />';

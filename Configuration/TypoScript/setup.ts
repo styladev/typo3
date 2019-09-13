@@ -25,5 +25,6 @@ plugin.tx_ecstyla_contenthub {
     settings {
         contenthub_segment = magazine
         api_url = https://seoapi.styla.com/clients/
+        disabled_meta_tags =
     }
 }
