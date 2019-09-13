@@ -1,6 +1,7 @@
 <?php
 namespace Ecentral\EcStyla\Controller;
 
+use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /***************************************************************
@@ -64,6 +65,18 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
     public function showAction()
     {
+        if (!array_key_exists('api_url',$this->settings)
+            || !array_key_exists('contenthub_segment',$this->settings)) {
+            $pluginConfigFromSetup = '';
+            TypoScriptParser::includeFile('typo3conf/ext/ec_styla/Configuration/TypoScript/setup.ts' ,1 ,false,$pluginConfigFromSetup);
+            /** @var TypoScriptParser $typoScriptParser */
+            $typoScriptParser = $this->objectManager->get(TypoScriptParser::class);
+            $typoScriptParser->parse($pluginConfigFromSetup);
+            $this->settings['api_url'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['api_url'];
+            $this->settings['contenthub_segment'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['contenthub_segment'];
+            $this->settings['disabled_meta_tags'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['disabled_meta_tags'];
+        }
+
         $this->cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('ec_styla');
         $cacheIdentifier = $this->getCacheIdentifier();
         $cachedContent = $this->cache->get($cacheIdentifier);
