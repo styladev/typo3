@@ -79,7 +79,6 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             $typoScriptParser->parse($pluginConfigFromSetup);
             $this->settings['api_url'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['api_url'];
             $this->settings['contenthub_segment'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['contenthub_segment'];
-            $this->settings['disabled_meta_tags'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['disabled_meta_tags'];
         }
 
         $this->cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('ec_styla');
@@ -178,7 +177,10 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                 if(null != $item->attributes->name && !in_array($item->attributes->name, $this->disabledMetaTagsArray)) {
                     return '<meta name="' . $item->attributes->name  . '" content="' . $item->attributes->content . '" />';
                 }
-                return '<meta property="' .  $item->attributes->property  . '" content="' . $item->attributes->content . '" />';
+                if (!in_array($item->attributes->property, $this->disabledMetaTagsArray)) {
+                    return '<meta property="' .  $item->attributes->property  . '" content="' . $item->attributes->content . '" />';
+                }
+                return '';
                 break;
             case 'link':
                 return '<link rel="' . $item->attributes->rel . '" href="' . $item->attributes->href . '" />';
@@ -189,5 +191,10 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             default:
                 return '';
         }
+    }
+
+    protected function removeTYPO3MetaTags() {
+        $metaTagManager = $this->objectManager->get(MetaManagrw::class)->getManagerForProperty('og:title');
+
     }
 }
