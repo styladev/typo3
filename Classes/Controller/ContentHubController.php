@@ -78,7 +78,6 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             $typoScriptParser = $this->objectManager->get(TypoScriptParser::class);
             $typoScriptParser->parse($pluginConfigFromSetup);
             $this->settings['api_url'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['api_url'];
-            $this->settings['contenthub_segment'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['contenthub_segment'];
         }
 
         $this->cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('ec_styla');
@@ -132,7 +131,6 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                 $GLOBALS['TSFE']->additionalHeaderData[] = $headerElement;
             }
         }
-
         $this->view->assign('seoHtml', $content->html->body);
     }
 
