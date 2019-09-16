@@ -19,10 +19,10 @@ MySQL >= 5.5
 ## Configuration
 
 ### Extension Configuration
-Within the extension configuration (Admin Tools->Extensions->Ecentral Styla Integration) the rootpath to the Styla content needs to be set up. By default, this is set to `magazine` which is the default Styla content hub integration.
+Within the extension configuration (Admin Tools->Extensions->Ecentral Styla Integration) the rootpath to the Styla content needs to be set up. By default, this is set to `magazine` which is the default Styla content integration.
 
 ### Root Page Configuration
-If you want to use something else than the default configuration, you can configure the extension to use other root paths. To do this, go to the extension configuration and edit the configuration of ec_styla. Enter every path, where the styla content hub plugin should be displayed, separated by commas.
+If you want to use something else than the default configuration, you can configure the extension to use other root paths. To do this, go to the extension configuration and edit the configuration of ec_styla. Enter every path, where the styla content plugin should be displayed, separated by commas.
 
 ### Content Page Configuration
 Necessary meta elements are provided by Styla. This configuration has to be

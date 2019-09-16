@@ -4,7 +4,7 @@
 		<header/>
 		<body>
 			<trans-unit id="tx_ec_styla_contenthub.name">
-				<source>Styla Content Hub</source>
+				<source>Styla Content</source>
 			</trans-unit>
 			<trans-unit id="tx_ec_styla_contenthub.description">
 				<source>Displays stories inside a content hub.</source>
