@@ -3,6 +3,8 @@ namespace Ecentral\EcStyla\Controller;
 
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /***************************************************************
  *  Copyright notice
@@ -55,6 +57,11 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     /** @var  \TYPO3\CMS\Extbase\Object\ObjectManager */
     protected $objectManager;
 
+    /**
+     * @var PageRepository
+     */
+    protected $pageRepository;
+
     public function __construct()
     {
         $this->objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
@@ -83,6 +90,20 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         $this->cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('ec_styla');
         $cacheIdentifier = $this->getCacheIdentifier();
         $cachedContent = $this->cache->get($cacheIdentifier);
+
+        $pageUid = $this->configurationManager->getContentObject()->data['uid'];
+
+        $autodetectContent = $this->getExtensionConfiguration('autodetectContent');
+
+        if ((!array_key_exists('stylaContent', $this->settings['contenthub']) || $this->settings['stylaContent'] === '')
+            && $autodetectContent === '1') {
+            $this->pageRepository = $this->objectManager->get(PageRepository::class);
+            $page = $this->pageRepository->getPage($pageUid);
+            $realurlPathSegment = $page['tx_realurl_pathsegment'];
+            $this->view->assign('stylaContent', $realurlPathSegment);
+        } else {
+            $this->view->assign('stylaContent', $this->settings['contenthub']['stylaContent']);
+        }
 
         if (false == $cachedContent) {
             $path = strtok(str_replace(
@@ -194,5 +215,26 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     protected function removeTYPO3MetaTags() {
         $metaTagManager = $this->objectManager->get(MetaManagrw::class)->getManagerForProperty('og:title');
 
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getExtensionConfiguration($key)
+    {
+        if (!is_array($this->valuedExtensionConfiguration)) {
+            /** @var ConfigurationUtility $configurationUtility */
+            $configurationUtility = $this->objectManager->get(ConfigurationUtility::class);
+            $extensionConfiguration = $configurationUtility->getCurrentConfiguration('ec_styla');
+            $this->valuedExtensionConfiguration = $configurationUtility->convertNestedToValuedConfiguration($extensionConfiguration);
+        }
+
+        $configKey = sprintf('%s.value', $key);
+        if (array_key_exists($configKey, $this->valuedExtensionConfiguration)) {
+            return $this->valuedExtensionConfiguration[$configKey]['value'];
+        } else {
+            return null;
+        }
     }
 }

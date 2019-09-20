@@ -15,6 +15,14 @@
                             </config>
                         </TCEforms>
                     </settings.contenthub.id>
+                    <settings.contenthub.stylaContent>
+                        <TCEforms>
+                            <label>LLL:EXT:ec_styla/Resources/Private/Language/locallang.xlf:tx_ecstyla_domain_model_contenthub.styla_content</label>
+                            <config>
+                                <type>input</type>
+                            </config>
+                        </TCEforms>
+                    </settings.contenthub.stylaContent>
                 </el>
             </ROOT>
         </sDEF>

@@ -1,2 +1,4 @@
 # cat=basic; type=string; label=Rootpath
 rootPath = magazine
+# cat=basic; type=boolean; label=Derive Styla content from url
+autodetectContent = 0
