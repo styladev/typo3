@@ -15,6 +15,9 @@
 			<trans-unit id="tx_ecstyla_domain_model_contenthub.content_hub_segment">
 				<source>Content Hub Segment</source>
 			</trans-unit>
+			<trans-unit id="tx_ecstyla_domain_model_contenthub.styla_content">
+				<source>Styla Content</source>
+			</trans-unit>
 
 			<trans-unit id="tx_ecstyla_domain_model_teaser.limit">
 				<source>Limit</source>

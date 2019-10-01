@@ -1,7 +1,10 @@
 <?php
 namespace Ecentral\EcStyla\Controller;
 
+use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /***************************************************************
  *  Copyright notice
@@ -41,6 +44,11 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $disabledMetaTagsArray = [];
+
+    /**
      * Default lifetime of cached data
      * @var int
      */
@@ -48,6 +56,11 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
     /** @var  \TYPO3\CMS\Extbase\Object\ObjectManager */
     protected $objectManager;
+
+    /**
+     * @var PageRepository
+     */
+    protected $pageRepository;
 
     public function __construct()
     {
@@ -64,9 +77,33 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
     public function showAction()
     {
+        if (!array_key_exists('api_url',$this->settings)
+            || !array_key_exists('contenthub_segment',$this->settings)) {
+            $pluginConfigFromSetup = '';
+            TypoScriptParser::includeFile('typo3conf/ext/ec_styla/Configuration/TypoScript/setup.ts' ,1 ,false,$pluginConfigFromSetup);
+            /** @var TypoScriptParser $typoScriptParser */
+            $typoScriptParser = $this->objectManager->get(TypoScriptParser::class);
+            $typoScriptParser->parse($pluginConfigFromSetup);
+            $this->settings['api_url'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['api_url'];
+        }
+
         $this->cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('ec_styla');
         $cacheIdentifier = $this->getCacheIdentifier();
         $cachedContent = $this->cache->get($cacheIdentifier);
+
+        $pageUid = $this->configurationManager->getContentObject()->data['uid'];
+
+        $autodetectContent = $this->getExtensionConfiguration('autodetectContent');
+
+        if ((!array_key_exists('stylaContent', $this->settings['contenthub']) || $this->settings['stylaContent'] === '')
+            && $autodetectContent === '1') {
+            $this->pageRepository = $this->objectManager->get(PageRepository::class);
+            $page = $this->pageRepository->getPage($pageUid);
+            $realurlPathSegment = $page['tx_realurl_pathsegment'];
+            $this->view->assign('stylaContent', $realurlPathSegment);
+        } else {
+            $this->view->assign('stylaContent', $this->settings['contenthub']['stylaContent']);
+        }
 
         if (false == $cachedContent) {
             $path = strtok(str_replace(
@@ -105,6 +142,8 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             return;
         }
 
+        $this->disabledMetaTagsArray = array_map('trim', explode(',', $this->settings['disabled_meta_tags']));
+
         foreach ($content->tags as $item) {
             if ('' != ($headerElement = $this->getHtmlForTagItem($item))) {
                 // If Cache-Control is set to no-cache upon request, the page renderer
@@ -113,7 +152,6 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                 $GLOBALS['TSFE']->additionalHeaderData[] = $headerElement;
             }
         }
-
         $this->view->assign('seoHtml', $content->html->body);
     }
 
@@ -155,10 +193,13 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     protected function getHtmlForTagItem($item) {
         switch ($item->tag) {
             case 'meta':
-                if(null != $item->attributes->name) {
+                if(null != $item->attributes->name && !in_array($item->attributes->name, $this->disabledMetaTagsArray)) {
                     return '<meta name="' . $item->attributes->name  . '" content="' . $item->attributes->content . '" />';
                 }
-                return '<meta property="' .  $item->attributes->property  . '" content="' . $item->attributes->content . '" />';
+                if (!in_array($item->attributes->property, $this->disabledMetaTagsArray)) {
+                    return '<meta property="' .  $item->attributes->property  . '" content="' . $item->attributes->content . '" />';
+                }
+                return '';
                 break;
             case 'link':
                 return '<link rel="' . $item->attributes->rel . '" href="' . $item->attributes->href . '" />';
@@ -168,6 +209,32 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                 break;
             default:
                 return '';
+        }
+    }
+
+    protected function removeTYPO3MetaTags() {
+        $metaTagManager = $this->objectManager->get(MetaManagrw::class)->getManagerForProperty('og:title');
+
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getExtensionConfiguration($key)
+    {
+        if (!is_array($this->valuedExtensionConfiguration)) {
+            /** @var ConfigurationUtility $configurationUtility */
+            $configurationUtility = $this->objectManager->get(ConfigurationUtility::class);
+            $extensionConfiguration = $configurationUtility->getCurrentConfiguration('ec_styla');
+            $this->valuedExtensionConfiguration = $configurationUtility->convertNestedToValuedConfiguration($extensionConfiguration);
+        }
+
+        $configKey = sprintf('%s.value', $key);
+        if (array_key_exists($configKey, $this->valuedExtensionConfiguration)) {
+            return $this->valuedExtensionConfiguration[$configKey]['value'];
+        } else {
+            return null;
         }
     }
 }

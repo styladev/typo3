@@ -12,4 +12,8 @@ plugin.tx_ecstyla_contenthub {
         # cat=plugin.tx_ecstyla_contenthub//a; type=string; label=Default storage PID
         storagePid =
     }
+    settings {
+    # cat=plugin.tx_ecstyla_contenthub/settings/meta; type=string; label=Meta Tags that should be disabled for styla
+        disabled_meta_tags = 
+    }
 }

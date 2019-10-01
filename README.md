@@ -19,11 +19,10 @@ MySQL >= 5.5
 ## Configuration
 
 ### Extension Configuration
-Within the extension configuration (Admin Tools->Extensions->Ecentral Styla Integration) the rootpath to the Styla content needs to be set up. By default, this is set to `magazine` which is the default Styla content hub integration.
+Within the extension configuration (Admin Tools->Extensions->Ecentral Styla Integration) the rootpath to the Styla content needs to be set up. By default, this is set to `magazine` which is the default Styla content integration.
 
 ### Root Page Configuration
-Include the Typoscript template 'Styla Integration (ec_styla)' to your root page template (via Web->List->Your Root Page). You may use the provided
-default or set your own configuration. Options can be configured for either the whole pagetree or the individual pages. 
+If you want to use something else than the default configuration, you can configure the extension to use other root paths. To do this, go to the extension configuration and edit the configuration of ec_styla. Enter every path, where the styla content plugin should be displayed, separated by commas.
 
 ### Content Page Configuration
 Necessary meta elements are provided by Styla. This configuration has to be
@@ -41,6 +40,8 @@ You can add Styla Plugins via the 'Add Content' option of the page module.
 ### Content Hub
 The content hub plugin will display a single content hub or Styla Landing Page. You only need to provide the content hub id and let Styla do the
 magic. Please make sure the page title corresponds to your `plugin.tx_ecstyla_contenthub.settings.contenthub_segment` setting.
+#### Metadata
+It is possible to disable specific meta tags via the typoscript setup key `plugin.tx_ecstyla_contenthub.settings.disabled_meta_tags`. You can configure multiple tag names and properties by separating them with commas
 
 ### Teaser
 The Teaser plugin allows you to feature a number of stories from your Styla content hub. You can set the number of items 

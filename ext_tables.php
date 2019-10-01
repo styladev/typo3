@@ -37,7 +37,7 @@ call_user_func(
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
             'Ecentral.EcStyla',
             'Contenthub',
-            'Styla Content Hub'
+            'Styla Content'
         );
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('ec_styla', 'Configuration/TypoScript', 'Styla Integration');

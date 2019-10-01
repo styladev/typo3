@@ -23,7 +23,7 @@ plugin.tx_ecstyla_contenthub {
         #callDefaultActionIfActionCantBeResolved = 1
     }
     settings {
-        contenthub_segment = magazine
         api_url = https://seoapi.styla.com/clients/
+        disabled_meta_tags = {$plugin.tx_ecstyla_contenthub.settings.disabled_meta_tags}
     }
 }

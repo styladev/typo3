@@ -55,13 +55,15 @@ class Realurl implements SingletonInterface {
      */
     public function configure($parameters) {
 
-        $uriSegment = $this->getExtensionConfiguration('rootPath');
+        $uriSegments = array_map('trim', explode(',', $this->getExtensionConfiguration('rootPath')));
 
         $signalSlotDispatcher = $this->objectManager->get(Dispatcher::class);
-        list($uriSegment) = $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForRootPath', array($uriSegment));
+        foreach ($uriSegments as $uriSegment) {
+            list($uriSegment) = $signalSlotDispatcher->dispatch(__CLASS__, 'beforeCheckingForRootPath', array($uriSegment));
 
-        if ($this->isStylaRequest($uriSegment)) {
-            $parameters['configuration']['init']['postVarSet_failureMode'] = 'ignore';
+            if ($this->isStylaRequest($uriSegment)) {
+                $parameters['configuration']['init']['postVarSet_failureMode'] = 'ignore';
+            }
         }
     }
 
