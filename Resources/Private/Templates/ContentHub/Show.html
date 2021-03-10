@@ -3,17 +3,7 @@
 	<f:layout name="Default" />
 
 	<f:section name="content">
-
-		<f:if condition="{stylaContent}">
-			<f:then>
-				<div data-styla-client="{settings.contenthub.id}" data-styla-content="{stylaContent}">
-			</f:then>
-			<f:else>
-				<div id="stylaMagazine" data-styla-client="{settings.contenthub.id}">
-			</f:else>
-		</f:if>
-			<f:format.raw>{seoHtml}</f:format.raw>
-		</div>
-		<script src="https://client-scripts.styla.com/scripts/clients/{settings.contenthub.id}.js" async></script>
+		<div data-styla-client="{settings.contenthub.id}"><f:format.raw>{seoHtml}</f:format.raw></div>
+		<script src="https://engine.styla.com/init.js" async></script>
     </f:section>
 </html>

@@ -4,8 +4,8 @@ This TYPO3 extension allows to show the Styla content hub and / or landing pages
 [This documentation page](https://docs.styla.com/) should provide you an overview of how Styla works in general. 
 
 ## Requirements
-TYPO3 >= 7.6.31  
-PHP >= 5.5  
+TYPO3 >= 10.4.13
+PHP >= 7.2  
 MySQL >= 5.5
 
 ## Installation Composer Mode
@@ -31,17 +31,15 @@ done for every page on which the content hub plugin will be displayed and will h
     page.meta.robots =
     config.noPageTitle = 2
     
-Please note that there are issues with hiding the page title in some versions of TYPO3. Further information is available
-in issue [#85720](https://forge.typo3.org/issues/85720) of the TYPO3 core bug tracker.
-    
 ## Plugins provided by this Extension
 You can add Styla Plugins via the 'Add Content' option of the page module. 
 
 ### Content Hub
+#### Rootpaths
 The content hub plugin will display a single content hub or Styla Landing Page. You only need to provide the content hub id and let Styla do the
-magic. Please make sure the page title corresponds to your `plugin.tx_ecstyla_contenthub.settings.contenthub_segment` setting.
+magic. Please make sure the page title corresponds to one of the rootpaths you defined in the extension configuration.
 #### Metadata
-It is possible to disable specific meta tags via the typoscript setup key `plugin.tx_ecstyla_contenthub.settings.disabled_meta_tags`. You can configure multiple tag names and properties by separating them with commas
+It is possible to disable specific meta tags via the extension configuration. You can configure multiple tag names and properties by separating them with commas.
 
 ### Teaser
 The Teaser plugin allows you to feature a number of stories from your Styla content hub. You can set the number of items 
@@ -58,7 +56,3 @@ out more information about signal slots in the [official TYPO3 documentation](ht
 ## Caching
 TYPO3 will cache Styla related content for up to 60 Minutes by default. You can clear the cache anytime by using TYPO3s 'Clear all
 caches' option within the TYPO3 backend.
-
-## Development / Test setup
-
-see [docker/README.md](docker/README.md)

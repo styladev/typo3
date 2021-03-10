@@ -22,8 +22,4 @@ plugin.tx_ecstyla_contenthub {
     mvc {
         #callDefaultActionIfActionCantBeResolved = 1
     }
-    settings {
-        api_url = https://seoapi.styla.com/clients/
-        disabled_meta_tags = {$plugin.tx_ecstyla_contenthub.settings.disabled_meta_tags}
-    }
 }
