@@ -1,4 +1,6 @@
-# cat=basic; type=string; label=Rootpath
+# cat=basic; type=string; label=Styla API Endpoint
+api_url = https://seoapi.styla.com/clients/
+# cat=basic; type=string; label=Rootpaths, comma separated
 rootPath = magazine
-# cat=basic; type=boolean; label=Derive Styla content from url
-autodetectContent = 0
+# cat=basic; type=string; label=Disabled meta tags, comma separated
+disabled_meta_tags =

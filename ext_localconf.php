@@ -94,8 +94,6 @@ call_user_func(
             ['source' => 'EXT:ec_styla/Resources/Public/Icons/contenthub.svg']
         );
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']['ConfigurationReader_postProc'][] = 'Ecentral\\EcStyla\\Hook\\Realurl->configure';
-
         if (false == is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['ec_styla'])) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['ec_styla'] = array();
         }
@@ -103,12 +101,5 @@ call_user_func(
         if (false == isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['ec_styla']['frontend'])) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['ec_styla']['frontend'] = \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class;
         }
-
-        if ('7.6' == TYPO3_branch) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Ecentral\\EcStyla\\Utility\\StylaRequest'] = array(
-                'className' => \Ecentral\EcStyla\Compatiblity\_7_6\Utility\StylaRequest::class
-            );
-        }
-
     }
 );

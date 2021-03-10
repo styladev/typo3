@@ -1,9 +1,13 @@
 <?php
+
 namespace Ecentral\EcStyla\Controller;
 
-use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use Ecentral\EcStyla\Utility\StylaRequest;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /***************************************************************
@@ -39,7 +43,7 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     const API_URI_QUERYSTRING = '%s?url=/%s';
 
     /**
-     * @var \TYPO3\CMS\Core\Cache\CacheManager
+     * @var FrontendInterface
      */
     protected $cache;
 
@@ -54,17 +58,26 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
     protected $cachePeriod = 3600;
 
-    /** @var  \TYPO3\CMS\Extbase\Object\ObjectManager */
-    protected $objectManager;
+    /** @var ExtensionConfiguration */
+    protected $extensionConfiguration;
+
+    /** @var CacheManager */
+    protected $cacheManager;
 
     /**
      * @var PageRepository
      */
     protected $pageRepository;
 
-    public function __construct()
+    public function __construct(ExtensionConfiguration $extensionConfiguration, CacheManager $cacheManager)
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        $this->extensionConfiguration = $extensionConfiguration;
+        $this->cacheManager = $cacheManager;
+        try {
+            $this->cache = $cacheManager->getCache('ec_styla');
+        } catch (NoSuchCacheException $e) {
+            throw new NoSuchCacheException('Styla cache could not be found. Please run the database tool from the maintenance tab inside TYPO3 backend.');
+        }
     }
 
     /**
@@ -75,35 +88,12 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      *
      * @return void
      */
-    public function showAction()
+    public function showAction(): void
     {
-        if (!array_key_exists('api_url',$this->settings)
-            || !array_key_exists('contenthub_segment',$this->settings)) {
-            $pluginConfigFromSetup = '';
-            TypoScriptParser::includeFile('typo3conf/ext/ec_styla/Configuration/TypoScript/setup.ts' ,1 ,false,$pluginConfigFromSetup);
-            /** @var TypoScriptParser $typoScriptParser */
-            $typoScriptParser = $this->objectManager->get(TypoScriptParser::class);
-            $typoScriptParser->parse($pluginConfigFromSetup);
-            $this->settings['api_url'] = $typoScriptParser->setup['plugin.']['tx_ecstyla_contenthub.']['settings.']['api_url'];
-        }
+        $configuration = $this->extensionConfiguration->get('ec_styla');
 
-        $this->cache = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('ec_styla');
         $cacheIdentifier = $this->getCacheIdentifier();
         $cachedContent = $this->cache->get($cacheIdentifier);
-
-        $pageUid = $this->configurationManager->getContentObject()->data['uid'];
-
-        $autodetectContent = $this->getExtensionConfiguration('autodetectContent');
-
-        if ((!array_key_exists('stylaContent', $this->settings['contenthub']) || $this->settings['stylaContent'] === '')
-            && $autodetectContent === '1') {
-            $this->pageRepository = $this->objectManager->get(PageRepository::class);
-            $page = $this->pageRepository->getPage($pageUid);
-            $realurlPathSegment = $page['tx_realurl_pathsegment'];
-            $this->view->assign('stylaContent', $realurlPathSegment);
-        } else {
-            $this->view->assign('stylaContent', $this->settings['contenthub']['stylaContent']);
-        }
 
         if (false == $cachedContent) {
             $path = strtok(str_replace(
@@ -113,24 +103,24 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             ), '?');
 
             $url = sprintf(
-                $this->settings['api_url'] . self::API_URI_QUERYSTRING,
+                $configuration['api_url'] . self::API_URI_QUERYSTRING,
                 $this->settings['contenthub']['id'],
                 $path
             );
 
-            $request = GeneralUtility::makeInstance(\Ecentral\EcStyla\Utility\StylaRequest::class);
+            $request = GeneralUtility::makeInstance(StylaRequest::class);
             $content = $request->get($url);
             if (null !== $content) {
                 $this->cachePeriod = $request->getCachePeriod();
                 $this->cacheContent(
                     $content,
-                    array (
+                    array(
                         'styla',
                         $this->settings['contenthub']['id']
                     )
                 );
             }
-       } else {
+        } else {
             $content = $cachedContent;
         }
 
@@ -142,7 +132,7 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             return;
         }
 
-        $this->disabledMetaTagsArray = array_map('trim', explode(',', $this->settings['disabled_meta_tags']));
+        $this->disabledMetaTagsArray = array_map('trim', explode(',', $configuration['disabled_meta_tags']));
 
         foreach ($content->tags as $item) {
             if ('' != ($headerElement = $this->getHtmlForTagItem($item))) {
@@ -162,7 +152,8 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * @param array $tags
      * @param int $cachePeriod
      */
-    protected function cacheContent($item, $tags = array('styla'), $cachePeriod = 3600) {
+    protected function cacheContent($item, $tags = array('styla'), $cachePeriod = 3600): void
+    {
         $this->cache->set(
             $this->getCacheIdentifier(),
             $item,
@@ -176,65 +167,37 @@ class ContentHubController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      *
      * @return string
      */
-    protected function getCacheIdentifier() {
+    protected function getCacheIdentifier(): string
+    {
         $path = strtok($this->getControllerContext()->getRequest()->getRequestUri(), '?');
 
-        return 'styla-' . $this->settings['contenthub']['id'] . '-'. md5($path);
+        return 'styla-' . $this->settings['contenthub']['id'] . '-' . md5($path);
     }
 
     /**
      * Return html element for item
      *
-     * TODO: Implement generic approach
-     *
      * @param $item
      * @return string
      */
-    protected function getHtmlForTagItem($item) {
+    protected function getHtmlForTagItem($item): string
+    {
         switch ($item->tag) {
             case 'meta':
-                if(null != $item->attributes->name && !in_array($item->attributes->name, $this->disabledMetaTagsArray)) {
-                    return '<meta name="' . $item->attributes->name  . '" content="' . $item->attributes->content . '" />';
+                if (null != $item->attributes->name && !in_array($item->attributes->name, $this->disabledMetaTagsArray)) {
+                    return '<meta name="' . $item->attributes->name . '" content="' . $item->attributes->content . '" />';
                 }
                 if (!in_array($item->attributes->property, $this->disabledMetaTagsArray)) {
-                    return '<meta property="' .  $item->attributes->property  . '" content="' . $item->attributes->content . '" />';
+                    return '<meta property="' . $item->attributes->property . '" content="' . $item->attributes->content . '" />';
                 }
                 return '';
-                break;
             case 'link':
-                return '<link rel="' . $item->attributes->rel . '" href="' . $item->attributes->href . '" />';
-                break;
+                $hreflang = isset($item->attributes->hreflang) ? 'hreflang="' . $item->attributes->hreflang . '"' : '';
+                return '<link rel="' . $item->attributes->rel . '" href="' . $item->attributes->href . '" ' . $hreflang . '/>';
             case 'title':
                 return '<title>' . $item->content . '</title>';
-                break;
             default:
                 return '';
-        }
-    }
-
-    protected function removeTYPO3MetaTags() {
-        $metaTagManager = $this->objectManager->get(MetaManagrw::class)->getManagerForProperty('og:title');
-
-    }
-
-    /**
-     * @param string $key
-     * @return mixed
-     */
-    public function getExtensionConfiguration($key)
-    {
-        if (!is_array($this->valuedExtensionConfiguration)) {
-            /** @var ConfigurationUtility $configurationUtility */
-            $configurationUtility = $this->objectManager->get(ConfigurationUtility::class);
-            $extensionConfiguration = $configurationUtility->getCurrentConfiguration('ec_styla');
-            $this->valuedExtensionConfiguration = $configurationUtility->convertNestedToValuedConfiguration($extensionConfiguration);
-        }
-
-        $configKey = sprintf('%s.value', $key);
-        if (array_key_exists($configKey, $this->valuedExtensionConfiguration)) {
-            return $this->valuedExtensionConfiguration[$configKey]['value'];
-        } else {
-            return null;
         }
     }
 }
